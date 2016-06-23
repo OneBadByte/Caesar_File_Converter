@@ -3,7 +3,7 @@
 
 using namespace std;
 fstream file;
-
+short pin = 0;
 
 
 class Crypt{
@@ -38,7 +38,7 @@ public:
 
     }
 
-    void writeToAFile(char buffer[], int length, string fileName){
+    void writeToAFile(char buffer[], long int length, string fileName){
         file.open(fileName);
         for(int i = 0; i < length; i++){
 
@@ -55,12 +55,12 @@ public:
     void writeDate(string fileName){
 
         file.open(fileName);
-        file << __DATE__<< endl;
+
         file.close();
 
     }
 
-    void readFromFile(char buffer[], int length, string fileName){
+    void readFromFile(char buffer[], long int length, string fileName){
         file.open(fileName);
         for(int i = 0; i < length; i++){
 
@@ -76,53 +76,24 @@ public:
 
 
 
-
-    string encrypt(string &word){
-
-
-        for(int i = 0; i < word.size(); i++){
-            word[i] = arr[matchCharacter((char)word[i] + 5)];
-
-
-
-        }
-        return word;
-    }
-
-
-    char encryptFile(char c[], int length){
-
+    char encryptFile(char c[], long int length){
+        //pin = pin+5;
         for(int i = 0; i < length; i++){
-
-            c[i] = arr[matchCharacter(c[i] + 5)];
+            c[i] = arr[matchCharacter((char) (c[i] + pin))];
 
         }
 
     }
 
-    char decryptFile(char c[], int length){
+    char decryptFile(char c[], long int length){
 
+        //pin = pin-5;
         for(int i = 0; i < length; i++){
-
-            c[i] = arr[matchCharacter(c[i] - 5)];
+            c[i] = arr[matchCharacter((char) (c[i] - pin))];
 
         }
 
     }
-
-
-    string decrypt(string &word){
-
-
-        for(int i = 0; i < word.size(); i++){
-            word[i] = arr[matchCharacter((char)word[i] - 5)];
-
-
-
-        }
-        return word;
-    }
-
 
 
 
@@ -134,8 +105,16 @@ public:
 
 int main() {
     Crypt crypt;
-    string things;
+    string inputFileName;
     char storage[30000];
+
+
+
+    cout << "Enter File Name: ";
+    cin >>  inputFileName;
+    cout << "Whats the password?: ";
+    short *pinptr = &pin;
+    cin >> *pinptr;
 
 
     cout << "to encrypt file press 1" << endl;
@@ -145,13 +124,13 @@ int main() {
     switch (number){
 
         case 1:
-            cout << "type file name to open: ";
-            cin >> things;
-            file.open(things);
+            //cout << "type file name to open: ";
+            //cin >> inputFileName;
+            file.open(inputFileName);
             if(file.is_open()){
                 // get length of file:
                 file.seekg (0, file.end);
-                int length = file.tellg();
+                long int length = file.tellg();
                 file.seekg (0, file.beg);
 
 
@@ -165,12 +144,14 @@ int main() {
                 file.close();
 
                 // print content:
+                pinptr= &pin+3;
+                crypt.writeDate(inputFileName);
                 crypt.encryptFile(storage, length);
 
                 //cout.write(storage, length);
                 //cout << endl;
 
-                crypt.writeToAFile(storage, length, things);
+                crypt.writeToAFile(storage, length, inputFileName);
                 cout << "DONE" << endl;
 
 
@@ -178,13 +159,13 @@ int main() {
             break;
 
         case 2:
-            cout << "type file name to open: ";
-            cin >> things;
-            file.open(things);
+            //cout << "type file name to open: ";
+            //cin >> inputFileName;
+            file.open(inputFileName);
             if(file.is_open()){
                 // get length of file:
                 file.seekg (0, file.end);
-                int length = file.tellg();
+                long int length = file.tellg();
                 file.seekg (0, file.beg);
 
                 // allocate memory:
@@ -197,12 +178,13 @@ int main() {
                 file.close();
 
                 // print content:
+                pinptr= &pin-3;
                 crypt.decryptFile(storage, length);
 
                 //cout.write(storage, length);
                 //cout << endl;
 
-                crypt.writeToAFile(storage, length, things);
+                crypt.writeToAFile(storage, length, inputFileName);
                 cout << "DONE" << endl;
 
 
@@ -211,13 +193,8 @@ int main() {
 
 
 
-
+        break;
     }
-
-
-
-
-
 
 
 
