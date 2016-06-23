@@ -52,6 +52,14 @@ public:
 
     }
 
+    void writeDate(string fileName){
+
+        file.open(fileName);
+        file << __DATE__<< endl;
+        file.close();
+
+    }
+
     void readFromFile(char buffer[], int length, string fileName){
         file.open(fileName);
         for(int i = 0; i < length; i++){
